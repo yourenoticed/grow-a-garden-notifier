@@ -12,7 +12,7 @@
 3. Create and activate a virtual environment:
 
    1. Run **python -m venv .venv** in your terminal
-   2. Run **.venv/Scripts/activate** if you use Bash or **.venv\Scripts\activate.bat** in the Command Prompt
+   2. Run **source .venv/Scripts/activate** if you use Bash or **.venv\Scripts\activate.bat** in the Command Prompt
 
 4. Run **pip install -r requirements.txt** in your terminal
 
