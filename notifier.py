@@ -11,7 +11,7 @@ async def start_polling(bot: Bot) -> None:
     last_eggs, weather = await on_startup(bot)
     while True:
         try:
-            sleep(30)
+            sleep(60)
             # weather = await check_weather_updates(bot, weather)
             last_eggs = await check_updates(bot, last_eggs)
         except KeyboardInterrupt:
