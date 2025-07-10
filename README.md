@@ -12,12 +12,12 @@
 3. Create and activate a virtual environment:
 
    1. Run **python -m venv .venv** in your terminal
-   2. Run **source .venv/Scripts/activate** if you use Bash or **source .venv/Scripts/activate.bat** in the Command Prompt
+   2. Run **.venv/Scripts/activate** if you use Bash or **.venv\Scripts\activate.bat** in the Command Prompt
 
 4. Run **pip install -r requirements.txt** in your terminal
 
 ### If you've done all the steps above:
 
-1. Open two terminals and activate virtual environments (step 3.2)
+1. Open this directory in two terminals and activate virtual environments (step 3.2)
 2. Run **python bot.py** in one terminal
 3. Run **python notifier.py** in another terminal
