@@ -11,7 +11,7 @@ async def start_polling(bot: Bot) -> None:
     last_eggs, weather = await on_startup(bot)
     while True:
         try:
-            sleep(60)
+            sleep(10)
             # weather = await check_weather_updates(bot, weather)
             last_eggs = await check_updates(bot, last_eggs)
         except KeyboardInterrupt:
@@ -31,12 +31,13 @@ async def check_updates(bot: Bot, last_eggs: list) -> list:
     if minutes_now % 5 == 0:
         sleep(60)
         stock: Stock = await Service.get_stock()
-        if minutes_now % 30 == 0 or stock.egg_shop != last_eggs:
+        if minutes_now % 30 == 0:
             await send_notifications(bot, stock, include_eggs=True)
-            return stock.egg_shop
+        # elif stock.egg_shop != last_eggs:
+        #     await send_notifications(bot, stock, include_eggs=True)
         else:
             await send_notifications(bot, stock, include_eggs=False)
-            return last_eggs
+        return stock.egg_shop
 
 
 async def check_weather_updates(bot: Bot, old_weather: list) -> list:

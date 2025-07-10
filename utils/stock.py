@@ -36,14 +36,14 @@ class Stock():
             raise Exception("Shop doesn't exist")
 
     def get_items(self, shop: list, config=set()) -> str:
-        items = set()
+        items = list()
         if config:
             for item in shop:
                 if item["name"] in config:
-                    items.add(f"{item["name"]} — {item["value"]}")
+                    items.append(f"{item["name"]} — {item["value"]}")
         else:
             for item in shop:
-                items.add(f"{item["name"]} — {item["value"]}")
+                items.append(f"{item["name"]} — {item["value"]}")
         return "\n".join(items)
 
     def json(self):
