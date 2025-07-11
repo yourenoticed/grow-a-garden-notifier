@@ -78,13 +78,13 @@ class Stock():
                 f"Event shop:\n{self.get_items(self.event_shop)}")
         if self.event_shop:
             string_builder.append(
-                f"Event shop:\n{self.get_items(self.easter_shop)}")
+                f"Easter shop:\n{self.get_items(self.easter_shop)}")
         if self.event_shop:
             string_builder.append(
-                f"Event shop:\n{self.get_items(self.night_shop)}")
+                f"Night shop:\n{self.get_items(self.night_shop)}")
         if self.event_shop:
             string_builder.append(
-                f"Event shop:\n{self.get_items(self.merchants_shop)}")
+                f"Merchant shop:\n{self.get_items(self.merchants_shop)}")
         return "\n\n".join(string_builder)
 
     def __str__(self):
