@@ -22,22 +22,22 @@ async def on_startup(bot: Bot) -> tuple[list]:
     stock: Stock = await Service.get_stock()
     last_eggs = stock.egg_shop
     weather = await Service.get_weather()
-    await send_notifications(bot, stock, include_eggs=True)
+    await send_notifications(bot, stock, include_eggs=True, include_easter=True, include_event=True, include_merchant=True, include_night=True)
     return (last_eggs, weather)
 
 
-async def check_updates(bot: Bot, last_eggs: list) -> list:
+async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
     minutes_now = localtime().tm_min
     if minutes_now % 5 == 0:
         sleep(60)
         stock: Stock = await Service.get_stock()
         if minutes_now % 30 == 0:
-            await send_notifications(bot, stock, include_eggs=True)
+            await send_notifications(bot, stock, include_eggs=True, include_easter=True, include_event=True, include_merchant=True, include_night=True)
         # elif stock.egg_shop != last_eggs:
         #     await send_notifications(bot, stock, include_eggs=True)
         else:
-            await send_notifications(bot, stock, include_eggs=False)
-        return stock.egg_shop
+            await send_notifications(bot, stock)
+        return stock
 
 
 async def check_weather_updates(bot: Bot, old_weather: list) -> list:

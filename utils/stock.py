@@ -5,6 +5,11 @@ class Stock():
         self.seed_shop: list = data["seedsStock"]
         self.gear_shop: list = data["gearStock"]
         self.egg_shop: list = data["eggStock"]
+        self.event_shop: list = data["eventStock"]
+        self.easter_shop: list = data["easterStock"]
+        self.night_shop: list = data["nightStock"]
+        self.merchants_shop: list = data["merchantsStock"]
+        self.cosmetics_shop: list = data["cosmeticsStock"]
         self.next_refresh = data["restockTimers"]["seeds"]
         self.eggs_refresh = data["restockTimers"]["eggs"]
         self.category_refresh_status = data["categoryRefreshStatus"]
@@ -52,15 +57,35 @@ class Stock():
                 "seed_shop": self.seed_shop,
                 "gear_shop": self.gear_shop,
                 "egg_shop": self.egg_shop,
+                "event_shop": self.event_shop,
+                "easter_shop": self.easter_shop,
+                "night_shop": self.night_shop,
+                "merchants_shop": self.merchants_shop,
+                "cosmetics_shop": self.cosmetics_shop,
                 "next_refresh": self.next_refresh,
                 "eggs_refresh": self.eggs_refresh,
                 "category_refresh_status": self.category_refresh_status}
 
     def __repr__(self):
-        seeds = f"Seeds:\n{self.get_items(self.seed_shop)}"
-        gears = f"Gears:\n{self.get_items(self.gear_shop)}"
-        eggs = f"Eggs:\n{self.get_items(self.egg_shop)}"
-        return "\n\n".join([seeds, gears, eggs])
+        string_builder = list()
+        string_builder.append(f"Seeds:\n{self.get_items(self.seed_shop)}")
+        string_builder.append(f"Gears:\n{self.get_items(self.gear_shop)}")
+        string_builder.append(f"Eggs:\n{self.get_items(self.egg_shop)}")
+        string_builder.append(
+            f"Cosmetics:\n{self.get_items(self.cosmetics_shop)}")
+        if self.event_shop:
+            string_builder.append(
+                f"Event shop:\n{self.get_items(self.event_shop)}")
+        if self.event_shop:
+            string_builder.append(
+                f"Event shop:\n{self.get_items(self.easter_shop)}")
+        if self.event_shop:
+            string_builder.append(
+                f"Event shop:\n{self.get_items(self.night_shop)}")
+        if self.event_shop:
+            string_builder.append(
+                f"Event shop:\n{self.get_items(self.merchants_shop)}")
+        return "\n\n".join(string_builder)
 
     def __str__(self):
         return self.__repr__()

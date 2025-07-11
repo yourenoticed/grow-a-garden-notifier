@@ -2,12 +2,15 @@ from json import loads, dumps
 
 
 def get_configs() -> dict:
-    with open("./db/configs.json", "r") as file:
-        raw = file.read()
-        return loads(raw)
+    try:
+        with open("./db/configs.json", "r") as file:
+            raw = file.read()
+            return loads(raw)
+    except:
+        return dict()
 
 
-def get_user_ids():
+def get_user_ids() -> list[int]:
     configs = get_configs()
     return [int(user_id) for user_id in configs.keys()]
 
