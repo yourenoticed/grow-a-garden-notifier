@@ -7,35 +7,66 @@ def get_configs() -> dict:
             raw = file.read()
             return loads(raw)
     except:
-        return dict()
+        return {"users": list()}
 
 
 def get_user_ids() -> list[int]:
     configs = get_configs()
-    return [int(user_id) for user_id in configs.keys()]
+    return [user["id"] for user in configs["users"] if user["status"] == "member"]
 
 
 def add_user(user_id: int) -> None:
-    try:
-        configs = get_configs()
-    except:
-        configs = dict()
-    with open("./db/configs.json", "w") as file:
-        if str(user_id) not in configs.keys():
-            configs[str(user_id)] = get_default_config()
-        file.write(dumps(configs))
+    configs = get_configs()
+    if not find_user(user_id):
+        user = dict()
+        user["id"] = user_id
+        user["status"] = "member"
+        user["config"] = get_default_config()
+        configs["users"].append(user)
+    write_file(configs)
+
+
+def block_user(user_id: int) -> None:
+    configs = get_configs()
+    user_i, user = find_user(user_id)
+    user["status"] = "blocked"
+    configs["users"][user_i] = user
+    write_file(configs)
+
+
+def unblock_user(user_id: int) -> None:
+    configs = get_configs()
+    user_i, user = find_user(user_id)
+    user["status"] = "member"
+    configs["users"][user_i] = user
+    write_file(configs)
 
 
 def get_user_config(user_id: int) -> list[str]:
-    configs = get_configs()
-    return configs[str(user_id)]
+    return find_user(user_id)[1]["config"]
 
 
-def write_config(user_id: int, config: list) -> None:
+def find_user(user_id: int) -> tuple[int, dict] | None:
+    try:
+        configs = get_configs()
+        for i, user in enumerate(configs["users"]):
+            if user["id"] == user_id:
+                return (i, user)
+    except:
+        return None
+
+
+def write_config(user_id: int, new_config: list) -> None:
     configs = get_configs()
-    configs[str(user_id)] = config
+    user_i, user = find_user(user_id)
+    if user:
+        configs["users"][user_i]["config"] = new_config
+        write_file(configs)
+
+
+def write_file(json_to_write: dict) -> None:
     with open("./db/configs.json", "w") as file:
-        file.write(dumps(configs))
+        file.write(dumps(json_to_write))
 
 
 def get_default_config() -> list:

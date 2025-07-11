@@ -4,7 +4,6 @@ from aiogram.filters import CommandStart
 from utils.service import Service
 from handlers.keyboards import main_kb
 
-
 router = Router()
 
 
@@ -25,6 +24,16 @@ async def show_config(message: Message):
     config = Service.get_config(message.chat.id)
     text = f"Your config:\n{"\n".join(config)}"
     await message.answer(text, reply_markup=main_kb)
+
+
+# @router.chat_member(ChatMemberUpdatedFilter(chat_member_updated.IS_NOT_MEMBER))
+# async def on_user_leave(event: ChatMemberUpdated):
+#     return Service.block_user(event.chat.id)
+
+
+# @router.chat_member(ChatMemberUpdatedFilter(chat_member_updated.IS_MEMBER))
+# async def on_user_join(event: ChatMemberUpdated):
+#     return Service.unblock_user(event.chat.id)
 
 
 @router.message()

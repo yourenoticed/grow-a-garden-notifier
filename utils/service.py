@@ -1,4 +1,4 @@
-from utils.db_handler import add_user, get_user_config, write_config, get_user_ids
+from utils.db_handler import add_user, get_user_config, write_config, get_user_ids, block_user, unblock_user
 from utils.fetcher import fetch_stock, fetch_weather
 from utils.stock import Stock
 
@@ -24,3 +24,9 @@ class Service():
 
     def write_config_to_db(user_id: int, config: list) -> None:
         return write_config(user_id, config)
+
+    def block_user(user_id: int):
+        return block_user(user_id)
+
+    def unblock_user(user_id: int):
+        return unblock_user(user_id)
