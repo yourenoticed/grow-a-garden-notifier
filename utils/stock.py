@@ -28,18 +28,6 @@ class Stock():
             all_items.append(curr_item)
         return all_items
 
-    def get_item_info(self, item_name: str, shop_name: str) -> str:
-        if shop_name == "Seeds":
-            for item in self.seed_shop:
-                if item["name"] == item_name:
-                    return f"{item["name"]}\t{item["value"]}"
-        elif shop_name == "Gears":
-            for item in self.seed_shop:
-                if item["name"] == item_name:
-                    return f"{item["name"]}\t{item["value"]}"
-        else:
-            raise Exception("Shop doesn't exist")
-
     def get_items(self, shop: list, config=set()) -> str:
         items = list()
         if config:
@@ -76,13 +64,13 @@ class Stock():
         if self.event_shop:
             string_builder.append(
                 f"Event shop:\n{self.get_items(self.event_shop)}")
-        if self.event_shop:
+        if self.easter_shop:
             string_builder.append(
                 f"Easter shop:\n{self.get_items(self.easter_shop)}")
-        if self.event_shop:
+        if self.night_shop:
             string_builder.append(
                 f"Night shop:\n{self.get_items(self.night_shop)}")
-        if self.event_shop:
+        if self.merchants_shop:
             string_builder.append(
                 f"Merchant shop:\n{self.get_items(self.merchants_shop)}")
         return "\n\n".join(string_builder)
