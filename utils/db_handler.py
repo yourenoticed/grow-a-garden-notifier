@@ -52,7 +52,7 @@ def find_user(user_id: int) -> tuple[int, dict] | None:
         for i, user in enumerate(configs["users"]):
             if user["id"] == user_id:
                 return (i, user)
-    except:
+    except KeyError:
         return None
 
 

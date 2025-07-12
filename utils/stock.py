@@ -61,16 +61,16 @@ class Stock():
         string_builder.append(f"Eggs:\n{self.get_items(self.egg_shop)}")
         string_builder.append(
             f"Cosmetics:\n{self.get_items(self.cosmetics_shop)}")
-        if self.event_shop:
+        if len(self.event_shop) > 0:
             string_builder.append(
                 f"Event shop:\n{self.get_items(self.event_shop)}")
-        if self.easter_shop:
+        if len(self.easter_shop) > 0:
             string_builder.append(
                 f"Easter shop:\n{self.get_items(self.easter_shop)}")
-        if self.night_shop:
+        if len(self.night_shop) > 0:
             string_builder.append(
                 f"Night shop:\n{self.get_items(self.night_shop)}")
-        if self.merchants_shop:
+        if len(self.merchants_shop) > 0:
             string_builder.append(
                 f"Merchant shop:\n{self.get_items(self.merchants_shop)}")
         return "\n\n".join(string_builder)
