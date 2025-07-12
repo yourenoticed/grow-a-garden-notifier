@@ -19,7 +19,18 @@ async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include
     chat_ids = Service.get_ids()
     for chat_id in chat_ids:
         config = set(Service.get_config(chat_id))
-        message = build_message(stock.__repr__(config))
+        params = stock.__repr__(config)
+        if include_eggs == False:
+            params.pop("Eggs")
+        if include_night == False:
+            params.pop("Night stock")
+        if include_easter == False:
+            params.pop("Easter stock")
+        if include_event == False:
+            params.pop("Event stock")
+        if include_merchant == False:
+            params.pop("Merchant stock")
+        message = build_message(params)
         if message != "The stock has been refreshed but there are no items you need":
             await Bot.send_message(bot, chat_id, message)
 

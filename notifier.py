@@ -31,8 +31,10 @@ async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
     if minutes_now % 5 == 0:
         sleep(60)
         stock: Stock = await Service.get_stock()
-        if minutes_now % 30 == 0:
-            await send_notifications(bot, stock, include_eggs=True, include_easter=True, include_event=True, include_merchant=True, include_night=True)
+        if minutes_now % 60 == 0:
+            await send_notifications(bot, stock, include_easter=True, include_eggs=True, include_event=True, include_merchant=True, include_night=True)
+        elif minutes_now % 30 == 0:
+            await send_notifications(bot, stock, include_eggs=True)
         # elif stock.egg_shop != last_eggs:
         #     await send_notifications(bot, stock, include_eggs=True)
         else:
