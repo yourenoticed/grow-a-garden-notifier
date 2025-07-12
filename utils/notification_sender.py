@@ -17,23 +17,9 @@ def build_message(params: dict) -> str:
 
 async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include_night=False, include_event=False, include_merchant=False, include_easter=False) -> None:
     chat_ids = Service.get_ids()
-    params = dict()
     for chat_id in chat_ids:
         config = set(Service.get_config(chat_id))
-        params["Seeds"] = stock.get_items(stock.seed_shop, config)
-        params["Gears"] = stock.get_items(stock.gear_shop, config)
-        if include_eggs == True:
-            params["Eggs"] = stock.get_items(stock.egg_shop, config)
-        if include_night == True:
-            params["Night stock"] = stock.get_items(stock.night_shop, config)
-        if include_event == True:
-            params["Event stock"] = stock.get_items(stock.event_shop, config)
-        if include_merchant == True:
-            params["Merchant stock"] = stock.get_items(
-                stock.merchants_shop, config)
-        if include_easter == True:
-            params["Easter stock"] = stock.get_items(stock.easter_shop, config)
-        message = build_message(params)
+        message = build_message(stock.__repr__(config))
         if message != "The stock has been refreshed but there are no items you need":
             await Bot.send_message(bot, chat_id, message)
 

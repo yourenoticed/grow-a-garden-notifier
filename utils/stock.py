@@ -30,7 +30,7 @@ class Stock():
 
     def get_items(self, shop: list, config=set()) -> str:
         items = list()
-        if config:
+        if len(config) > 0:
             for item in shop:
                 if item["name"] in config:
                     items.append(f"{item["name"]} — {item["value"]}")
@@ -54,26 +54,19 @@ class Stock():
                 "eggs_refresh": self.eggs_refresh,
                 "category_refresh_status": self.category_refresh_status}
 
-    def __repr__(self):
-        string_builder = list()
-        string_builder.append(f"Seeds:\n{self.get_items(self.seed_shop)}")
-        string_builder.append(f"Gears:\n{self.get_items(self.gear_shop)}")
-        string_builder.append(f"Eggs:\n{self.get_items(self.egg_shop)}")
-        string_builder.append(
-            f"Cosmetics:\n{self.get_items(self.cosmetics_shop)}")
-        if len(self.event_shop) > 0:
-            string_builder.append(
-                f"Event shop:\n{self.get_items(self.event_shop)}")
-        if len(self.easter_shop) > 0:
-            string_builder.append(
-                f"Easter shop:\n{self.get_items(self.easter_shop)}")
-        if len(self.night_shop) > 0:
-            string_builder.append(
-                f"Night shop:\n{self.get_items(self.night_shop)}")
-        if len(self.merchants_shop) > 0:
-            string_builder.append(
-                f"Merchant shop:\n{self.get_items(self.merchants_shop)}")
-        return "\n\n".join(string_builder)
+    def __repr__(self, config=set()) -> dict:
+        shop_items = dict()
+        shop_items["Seeds"] = self.get_items(self.seed_shop, config)
+        shop_items["Gears"] = self.get_items(self.gear_shop, config)
+        shop_items["Eggs"] = self.get_items(self.egg_shop, config)
+        shop_items["Cosmetics"] = self.get_items(self.cosmetics_shop, config)
+        shop_items["Event stock"] = self.get_items(self.event_shop, config)
+        shop_items["Easter stock"] = self.get_items(self.easter_shop, config)
+        shop_items["Night stock"] = self.get_items(self.night_shop, config)
+        shop_items["Merchant stock"] = self.get_items(
+            self.merchants_shop, config)
+        return shop_items
 
-    def __str__(self):
-        return self.__repr__()
+    def __str__(self, config=set()) -> str:
+        repr_dict = self.__repr__(config)
+        return "\n\n".join([f"{shop_name}:\n{repr_dict[shop_name]}" for shop_name in repr_dict if len(repr_dict[shop_name]) > 0])
