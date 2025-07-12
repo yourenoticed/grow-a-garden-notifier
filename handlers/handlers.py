@@ -16,7 +16,7 @@ async def welcome_message(message: Message):
 @router.message(F.text == "Stock")
 async def show_stock(message: Message):
     stock = await Service.get_stock()
-    await message.answer(stock.__str__(), reply_markup=main_kb)
+    await message.answer(stock.__str__(config=set()), reply_markup=main_kb)
 
 
 @router.message(F.text == "Config")
