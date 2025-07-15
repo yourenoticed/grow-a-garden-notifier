@@ -113,7 +113,7 @@ class Stock():
                 return "cosmetics"
             if curr_time.tm_min % 30 == 0:
                 return "eggs"
-            if curr_time.tm_min % 5 == 0 and old_stock.next_refresh["stock"] != self.next_refresh["stock"]:
+            if curr_time.tm_min % 5 == 0:
                 return "stock"
         return "none"
 
