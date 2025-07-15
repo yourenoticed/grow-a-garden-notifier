@@ -31,16 +31,13 @@ async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
     upd = new_stock.check_update(last_stock)
     match upd:
         case "stock":
-            sleep(60)
             new_stock = await Service.get_stock()
             await send_notifications(bot, new_stock)
         case "eggs":
-            sleep(60)
             new_stock = await Service.get_stock()
             await send_notifications(bot, new_stock, include_eggs=True,
                                      include_easter=True, include_honey=True, include_night=True)
         case "cosmetics":
-            sleep(60)
             new_stock = await Service.get_stock()
             await send_notifications(bot, new_stock, include_eggs=True, include_easter=True,
                                      include_honey=True, include_night=True, include_cosmetics=True)
