@@ -107,13 +107,14 @@ class Stock():
                     {"name": item, "value": diff[item]})
 
     def check_update(self, old_stock) -> str:
-        curr_time = localtime()
-        if curr_time.tm_hour % 4 == 1 and old_stock.next_refresh["cosmetics"] != self.next_refresh["cosmetics"]:
-            return "cosmetics"
-        if curr_time.tm_min % 30 == 0 and old_stock.next_refresh["eggs"] != self.next_refresh["eggs"]:
-            return "eggs"
-        if curr_time.tm_min % 5 == 0 and old_stock.next_refresh["stock"] != self.next_refresh["stock"]:
-            return "stock"
+        if old_stock != self:
+            curr_time = localtime()
+            if curr_time.tm_hour % 4 == 1:
+                return "cosmetics"
+            if curr_time.tm_min % 30 == 0:
+                return "eggs"
+            if curr_time.tm_min % 5 == 0 and old_stock.next_refresh["stock"] != self.next_refresh["stock"]:
+                return "stock"
         return "none"
 
     def get_current_stock_items(self) -> dict:
