@@ -10,7 +10,7 @@ class Service():
     async def get_stock() -> Stock:
         return await fetch_stock()
 
-    async def get_weather() -> list[dict]:
+    async def get_weather() -> set[str]:
         return await fetch_weather()
 
     def get_ids() -> list[int]:

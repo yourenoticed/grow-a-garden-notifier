@@ -8,49 +8,56 @@ from bot import bot
 
 
 async def start_polling(bot: Bot) -> None:
-    last_eggs, weather = await on_startup(bot)
+    stock, weather = await on_startup(bot)
     while True:
         try:
+            weather = await check_weather_updates(bot, weather)
+            stock = await check_updates(bot, stock)
             sleep(10)
-            # weather = await check_weather_updates(bot, weather)
-            last_eggs = await check_updates(bot, last_eggs)
         except KeyboardInterrupt:
             return
 
 
-async def on_startup(bot: Bot) -> tuple[list]:
+async def on_startup(bot: Bot) -> Stock:
     stock: Stock = await Service.get_stock()
-    last_eggs = stock.egg_shop
     weather = await Service.get_weather()
-    await send_notifications(bot, stock, include_eggs=True, include_easter=True, include_event=True, include_merchant=True, include_night=True)
-    return (last_eggs, weather)
+    await send_notifications(bot, stock, include_cosmetics=True, include_easter=True, include_eggs=True, include_honey=True, include_night=True)
+    await send_weather(bot, weather)
+    return (stock, weather)
 
 
 async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
-    minutes_now = localtime().tm_min
-    if minutes_now % 5 == 0:
-        sleep(60)
-        stock: Stock = await Service.get_stock()
-        if minutes_now % 60 == 0:
-            await send_notifications(bot, stock, include_easter=True, include_eggs=True, include_event=True, include_merchant=True, include_night=True)
-        elif minutes_now % 30 == 0:
-            await send_notifications(bot, stock, include_eggs=True)
-        # elif stock.egg_shop != last_eggs:
-        #     await send_notifications(bot, stock, include_eggs=True)
-        else:
-            await send_notifications(bot, stock)
-        return stock
+    new_stock: Stock = await Service.get_stock()
+    upd = new_stock.check_update(last_stock)
+    match upd:
+        case "stock":
+            sleep(60)
+            new_stock = await Service.get_stock()
+            await send_notifications(bot, new_stock)
+        case "eggs":
+            sleep(60)
+            new_stock = await Service.get_stock()
+            await send_notifications(bot, new_stock, include_eggs=True,
+                                     include_easter=True, include_honey=True, include_night=True)
+        case "cosmetics":
+            sleep(60)
+            new_stock = await Service.get_stock()
+            await send_notifications(bot, new_stock, include_eggs=True, include_easter=True,
+                                     include_honey=True, include_night=True, include_cosmetics=True)
+        case "none":
+            update = Stock(new_stock.find_diff(last_stock))
+            if update.length() > 0:
+                await send_notifications(bot, new_stock, updates=update)
+    return new_stock
 
 
-async def check_weather_updates(bot: Bot, old_weather: list) -> list:
-    new_weather = await Service.get_weather()
-    if len(new_weather) != len(old_weather):
-        if len(new_weather) > 0:
-            await send_weather(bot, new_weather, started=True)
-        elif len(new_weather) == 0:
-            await send_weather(bot, old_weather, started=False)
-        return new_weather
-    return old_weather
+async def check_weather_updates(bot: Bot, old_weather: set) -> set:
+    new_weather: set = await Service.get_weather()
+    if len(new_weather) > len(old_weather):
+        await send_weather(bot, new_weather.intersection(old_weather), started=True)
+    elif len(new_weather) < len(old_weather):
+        await send_weather(bot, old_weather.intersection(new_weather), started=False)
+    return new_weather
 
 
 if __name__ == "__main__":

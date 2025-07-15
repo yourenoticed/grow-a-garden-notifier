@@ -3,40 +3,31 @@ from utils.service import Service
 from utils.stock import Stock
 
 
-def build_message(params: dict) -> str:
-    message = ["New items in stock!"]
-    for shop in params:
-        if len(params[shop]) > 0:
-            message.append(f"{shop}:\n{params[shop]}")
-
-    if len(message) > 1:
-        return "\n\n".join(message)
+def build_message(stock_text: str) -> str:
+    if len(stock_text) > 0:
+        return f"New items in stock!\n\n{stock_text}"
     else:
         return "The stock has been refreshed but there are no items you need"
 
 
-async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include_night=False, include_event=False, include_merchant=False, include_easter=False) -> None:
+async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include_cosmetics=False, include_easter=False, include_night=False, include_honey=False, updates=Stock({})) -> None:
     chat_ids = Service.get_ids()
     for chat_id in chat_ids:
         config = set(Service.get_config(chat_id))
-        params = stock.__repr__(config)
-        if include_eggs == False:
-            params.pop("Eggs")
-        if include_night == False:
-            params.pop("Night stock")
-        if include_easter == False:
-            params.pop("Easter stock")
-        if include_event == False:
-            params.pop("Event stock")
-        if include_merchant == False:
-            params.pop("Merchant stock")
-        message = build_message(params)
+        if updates.length() > 0:
+            stock_text = updates.__str__(config, include_eggs=True, include_cosmetics=True,
+                                         include_easter=True, include_night=True, include_honey=True)
+        else:
+            stock_text = stock.__str__(
+                config, include_honey, include_cosmetics, include_easter, include_eggs, include_night)
+        message = build_message(stock_text)
         if message != "The stock has been refreshed but there are no items you need":
-            await Bot.send_message(bot, chat_id, message)
+            await send_message(bot, chat_id, message)
 
 
-async def send_weather(bot: Bot, weather: list, started=False) -> None:
+async def send_weather(bot: Bot, weather: set, started=False) -> None:
     chat_ids = Service.get_ids()
+    weather = list(weather)
     if started == True:
         message = ["New weather!\n"]
         message.extend(weather)
@@ -45,4 +36,11 @@ async def send_weather(bot: Bot, weather: list, started=False) -> None:
         message.extend(weather)
     text = "\n".join(message)
     for chat_id in chat_ids:
-        await Bot.send_message(bot, chat_id, text)
+        await send_message(bot, chat_id, text)
+
+
+async def send_message(bot: Bot, chat_id: int, text: str) -> None:
+    try:
+        await Bot.send_message(bot, chat_id, text, request_timeout=10)
+    except:
+        pass
