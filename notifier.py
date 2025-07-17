@@ -1,5 +1,5 @@
 from aiogram import Bot
-from time import sleep, localtime
+from time import sleep
 from asyncio import run
 from utils.notification_sender import send_notifications, send_weather
 from utils.service import Service
@@ -11,9 +11,9 @@ async def start_polling(bot: Bot) -> None:
     stock, weather = await on_startup(bot)
     while True:
         try:
+            sleep(10)
             weather = await check_weather_updates(bot, weather)
             stock = await check_updates(bot, stock)
-            sleep(10)
         except KeyboardInterrupt:
             return
 
@@ -21,8 +21,8 @@ async def start_polling(bot: Bot) -> None:
 async def on_startup(bot: Bot) -> Stock:
     stock: Stock = await Service.get_stock()
     weather = await Service.get_weather()
-    await send_notifications(bot, stock, include_cosmetics=True, include_easter=True, include_eggs=True, include_honey=True, include_night=True)
-    await send_weather(bot, weather)
+    await send_notifications(bot, stock, include_cosmetics=True, include_eggs=True)
+    await send_weather(bot, weather, started=True)
     return (stock, weather)
 
 
@@ -35,12 +35,10 @@ async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
             await send_notifications(bot, new_stock)
         case "eggs":
             new_stock = await Service.get_stock()
-            await send_notifications(bot, new_stock, include_eggs=True,
-                                     include_easter=True, include_honey=True, include_night=True)
+            await send_notifications(bot, new_stock, include_eggs=True)
         case "cosmetics":
             new_stock = await Service.get_stock()
-            await send_notifications(bot, new_stock, include_eggs=True, include_easter=True,
-                                     include_honey=True, include_night=True, include_cosmetics=True)
+            await send_notifications(bot, new_stock, include_eggs=True, include_cosmetics=True)
         case "none":
             update = Stock(new_stock.find_diff(last_stock))
             if update.length() > 0:
@@ -51,9 +49,9 @@ async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
 async def check_weather_updates(bot: Bot, old_weather: set) -> set:
     new_weather: set = await Service.get_weather()
     if len(new_weather) > len(old_weather):
-        await send_weather(bot, new_weather.intersection(old_weather), started=True)
+        await send_weather(bot, new_weather.difference(old_weather), started=True)
     elif len(new_weather) < len(old_weather):
-        await send_weather(bot, old_weather.intersection(new_weather), started=False)
+        await send_weather(bot, old_weather.difference(new_weather), started=False)
     return new_weather
 
 
