@@ -91,7 +91,7 @@ class Stock():
     def check_update(self, old_stock) -> str:
         if old_stock != self:
             curr_time = localtime()
-            if curr_time.tm_hour % 4 == 3:
+            if curr_time.tm_hour % 4 == 3 and curr_time.tm_min == 0:
                 return "cosmetics"
             if curr_time.tm_min % 30 == 0:
                 return "eggs"
