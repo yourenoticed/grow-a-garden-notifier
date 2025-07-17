@@ -8,8 +8,11 @@ WEATHER_URL = f"{API_URL}/weather"
 
 
 async def fetch_stock() -> Stock:
-    stock = get(STOCK_URL).json()
-    return Stock(stock)
+    try:
+        stock = get(STOCK_URL).json()
+        return Stock(stock)
+    except:
+        return Stock(dict())
 
 
 async def fetch_weather() -> set[str]:
