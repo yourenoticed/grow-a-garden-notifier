@@ -97,7 +97,8 @@ class Stock():
                 return "eggs"
             if curr_time.tm_min % 5 == 0:
                 return "stock"
-        return "none"
+            return "none"
+        return "not updated"
 
     def get_current_stock_items(self) -> dict:
         all_items = dict()
