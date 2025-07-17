@@ -9,17 +9,18 @@ class Stock():
         self.cosmetics_shop = self.get_shop("cosmetic_stock")
         self.seed_shop = self.get_shop("seed_stock")
 
-    def next_refresh_at(self) -> dict[str, float]:
-        try:
-            curr_time = localtime()
-            stock = (curr_time.tm_min - (curr_time.tm_min % 5)) % 60
-            eggs = (curr_time.tm_min - (curr_time.tm_min % 30) + 30) % 60
-            cosmetics = (curr_time.tm_hour - (curr_time.tm_hour % 4) + 4) % 24
-            return {"stock": stock,
-                    "eggs": eggs,
-                    "cosmetics": cosmetics}
-        except:
-            return dict()
+    # not sure if I need this piece of code anymore
+    # def next_refresh_at(self) -> dict[str, int]:
+    #     try:
+    #         curr_time = localtime()
+    #         stock = (curr_time.tm_min - (curr_time.tm_min % 5)) % 60
+    #         eggs = (curr_time.tm_min - (curr_time.tm_min % 30) + 30) % 60
+    #         cosmetics = (curr_time.tm_hour - (curr_time.tm_hour % 4) + 4) % 24
+    #         return {"stock": stock,
+    #                 "eggs": eggs,
+    #                 "cosmetics": cosmetics}
+    #     except:
+    #         return dict()
 
     def get_items(self, shop: dict, config=set()) -> str:
         items = list()

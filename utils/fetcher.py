@@ -2,8 +2,6 @@ from utils.stock import Stock
 from requests import get
 
 
-# API_URL = "https://growagarden.gg/api"
-# API_URL = "http://127.0.0.1:3000/api"
 API_URL = "https://api.joshlei.com/v2/growagarden"
 STOCK_URL = f"{API_URL}/stock"
 WEATHER_URL = f"{API_URL}/weather"

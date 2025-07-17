@@ -15,8 +15,12 @@ async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include
     for chat_id in chat_ids:
         config = set(Service.get_config(chat_id))
         if updates.length() > 0:
+            if len(updates.egg_shop) > 0:
+                include_eggs = True
+            if len(updates.cosmetics_shop) > 0:
+                include_cosmetics = True
             stock_text = updates.__str__(
-                config, include_eggs=True, include_cosmetics=True)
+                config, include_eggs=include_eggs, include_cosmetics=include_cosmetics)
         else:
             stock_text = stock.__str__(config, include_cosmetics, include_eggs)
         message = build_message(stock_text)
