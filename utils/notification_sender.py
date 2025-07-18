@@ -28,18 +28,20 @@ async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include
             await send_message(bot, chat_id, message)
 
 
-async def send_weather(bot: Bot, weather: set, started=False) -> None:
+async def send_weather(bot: Bot, old_weather: set, new_weather: set) -> None:
     chat_ids = Service.get_ids()
-    weather = list(weather)
-    if started == True:
-        message = ["New weather!\n"]
-        message.extend(weather)
-    else:
-        message = ["Weather stopped:\n"]
-        message.extend(weather)
-    text = "\n".join(message)
-    for chat_id in chat_ids:
-        await send_message(bot, chat_id, text)
+    started = "\n".join(new_weather.difference(old_weather))
+    stopped = "\n".join(old_weather.difference(new_weather))
+    message = list()
+    if len(started) > 0:
+        message.append(f"New weather!\n{started}")
+    if len(stopped) > 0:
+        message.append(f"Weather stopped:\n{stopped}")
+        message.append(stopped)
+    if len(message) > 0:
+        text = "\n\n".join(message)
+        for chat_id in chat_ids:
+            await send_message(bot, chat_id, text)
 
 
 async def send_message(bot: Bot, chat_id: int, text: str) -> None:

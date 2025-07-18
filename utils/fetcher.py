@@ -1,6 +1,6 @@
 from utils.stock import Stock
 from requests import get
-
+from requests import JSONDecodeError
 
 API_URL = "https://api.joshlei.com/v2/growagarden"
 STOCK_URL = f"{API_URL}/stock"
@@ -16,5 +16,8 @@ async def fetch_stock() -> Stock:
 
 
 async def fetch_weather() -> set[str]:
-    weather = get(WEATHER_URL).json()
-    return {event["weather_name"] for event in weather["weather"] if event["active"] == True}
+    try:
+        weather = get(WEATHER_URL).json()
+        return {event["weather_name"] for event in weather["weather"] if event["active"] == True}
+    except JSONDecodeError:
+        return set()
