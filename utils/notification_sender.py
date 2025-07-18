@@ -27,17 +27,18 @@ async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include
         if message != "The stock has been refreshed but there are no items you need":
             await send_message(bot, chat_id, message)
 
+# {} -> {"Windy"} -> {"Windy", "Tornado"} -> {"Tornado"} -> {}
 
-async def send_weather(bot: Bot, new_weather: set, old_weather=set()) -> None:
+
+async def send_weather(bot: Bot, new_weather: set, old_weather: set) -> None:
     chat_ids = Service.get_ids()
     started = "\n".join(new_weather.difference(old_weather))
     stopped = "\n".join(old_weather.difference(new_weather))
     message = list()
     if len(started) > 0:
-        message.append(f"New weather!\n{started}")
+        message.append(f"New weather:\n{started}")
     if len(stopped) > 0:
         message.append(f"Weather stopped:\n{stopped}")
-        message.append(stopped)
     if len(message) > 0:
         text = "\n\n".join(message)
         for chat_id in chat_ids:

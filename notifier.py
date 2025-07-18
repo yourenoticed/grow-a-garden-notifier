@@ -22,7 +22,7 @@ async def on_startup(bot: Bot) -> Stock:
     stock: Stock = await Service.get_stock()
     weather = await Service.get_weather()
     await send_notifications(bot, stock, include_cosmetics=True, include_eggs=True)
-    await send_weather(bot, weather)
+    await send_weather(bot, new_weather=weather, old_weather=set())
     return (stock, weather)
 
 
