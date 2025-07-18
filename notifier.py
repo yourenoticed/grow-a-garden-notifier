@@ -48,7 +48,7 @@ async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
 
 async def check_weather_updates(bot: Bot, old_weather: set) -> set:
     new_weather: set = await Service.get_weather()
-    if old_weather.intersection(new_weather) != new_weather:
+    if old_weather != new_weather:
         await send_weather(bot, new_weather=new_weather, old_weather=old_weather)
     return new_weather
 
