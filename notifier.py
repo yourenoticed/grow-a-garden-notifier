@@ -22,7 +22,7 @@ async def on_startup(bot: Bot) -> Stock:
     stock: Stock = await Service.get_stock()
     weather = await Service.get_weather()
     await send_notifications(bot, stock, include_cosmetics=True, include_eggs=True)
-    await send_weather(bot, weather, started=True)
+    await send_weather(bot, weather)
     return (stock, weather)
 
 
@@ -49,7 +49,7 @@ async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
 async def check_weather_updates(bot: Bot, old_weather: set) -> set:
     new_weather: set = await Service.get_weather()
     if old_weather.intersection(new_weather) != new_weather:
-        await send_weather(bot, old_weather, new_weather)
+        await send_weather(bot, new_weather=new_weather, old_weather=old_weather)
     return new_weather
 
 

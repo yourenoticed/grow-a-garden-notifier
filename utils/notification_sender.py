@@ -28,7 +28,7 @@ async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include
             await send_message(bot, chat_id, message)
 
 
-async def send_weather(bot: Bot, old_weather: set, new_weather: set) -> None:
+async def send_weather(bot: Bot, new_weather: set, old_weather=set()) -> None:
     chat_ids = Service.get_ids()
     started = "\n".join(new_weather.difference(old_weather))
     stopped = "\n".join(old_weather.difference(new_weather))
