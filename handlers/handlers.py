@@ -48,10 +48,10 @@ async def add_weather_to_config(callback: CallbackQuery):
     user_config: list = Service.get_weather_config(callback.from_user.id)
     if weather not in user_config:
         user_config.append(weather)
-        await callback.message.answer(f"You will receive notifications about {weather}")
+        # await callback.message.answer(f"You will receive notifications about {weather}")
     else:
         user_config.remove(weather)
-        await callback.message.answer(f"You will stop receiving notifications about {weather}")
+        # await callback.message.answer(f"You will stop receiving notifications about {weather}")
     Service.write_weather_config_to_db(callback.from_user.id, user_config)
     weather_setup_kb = await weather_kb(callback.from_user.id)
     await callback.message.edit_reply_markup(reply_markup=weather_setup_kb)
