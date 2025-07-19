@@ -83,7 +83,11 @@ async def add_item_to_config(callback: CallbackQuery):
     else:
         user_config.remove(item_name)
     Service.write_stock_config_to_db(user_id, user_config)
-    shop_setup_kb = await get_kb(user_id, shop_name)
+    if shop_name == "eggs":
+        adjust = 1
+    else:
+        adjust = 2
+    shop_setup_kb = await get_kb(user_id, shop_name, adjust)
     await callback.message.edit_reply_markup(reply_markup=shop_setup_kb)
 
 
