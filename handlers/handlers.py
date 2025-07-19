@@ -28,7 +28,7 @@ async def show_config(message: Message):
 
 @router.message(F.text == "Weather")
 async def show_weather(message: Message):
-    weather = await list(Service.get_weather())
+    weather = await Service.get_weather()
     if len(weather) > 0:
         text = f"Current weather:\n{"\n".join(weather)}"
     else:
