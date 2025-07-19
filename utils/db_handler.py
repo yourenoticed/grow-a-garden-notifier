@@ -23,7 +23,7 @@ def add_user(user_id: int) -> None:
         user["status"] = "member"
         user["config"] = get_default_config()
         configs["users"].append(user)
-    write_file(configs)
+        write_file(configs)
 
 
 def block_user(user_id: int) -> None:
@@ -42,8 +42,14 @@ def unblock_user(user_id: int) -> None:
     write_file(configs)
 
 
-def get_user_config(user_id: int) -> list[str]:
-    return find_user(user_id)[1]["config"]
+def get_stock_config(user_id: int) -> list[str]:
+    user = find_user(user_id)[1]
+    return user["config"]["stock"]
+
+
+def get_weather_config(user_id: int) -> list[str]:
+    user = find_user(user_id)[1]
+    return user["config"]["weather"]
 
 
 def find_user(user_id: int) -> tuple[int, dict] | None:
@@ -56,11 +62,19 @@ def find_user(user_id: int) -> tuple[int, dict] | None:
         return None
 
 
-def write_config(user_id: int, new_config: list) -> None:
+def write_stock_config(user_id: int, new_config: list) -> None:
     configs = get_configs()
     user_i, user = find_user(user_id)
     if user:
-        configs["users"][user_i]["config"] = new_config
+        configs["users"][user_i]["config"]["stock"] = new_config
+        write_file(configs)
+
+
+def write_weather_config(user_id: int, new_config: list) -> None:
+    configs = get_configs()
+    user_i, user = find_user(user_id)
+    if user:
+        configs["users"][user_i]["config"]["weather"] = new_config
         write_file(configs)
 
 

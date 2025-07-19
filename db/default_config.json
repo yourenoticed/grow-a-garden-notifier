@@ -1,5 +1,4 @@
-[
-    "Master Sprinkler",
-    "Bug Egg",
-    "Paradise Egg"
-]
+{
+    "stock": ["Master Sprinkler", "Bug Egg", "Paradise Egg"],
+    "weather": ["Heatwave", "SummerHarvest", "AuroraBorealis", "SunGod", "NightEvent", "BloodMoonEvent", "MeteorShower", "SpaceTravel", "Disco", "DJJhai", "Blackhole", "JandelStorm", "DJSandstorm", "Volcano", "UnderTheSea", "AlienInvasion", "JandelLazer", "Obby", "PoolParty", "JandelZombie"]
+}

@@ -13,7 +13,7 @@ def build_message(stock_text: str) -> str:
 async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include_cosmetics=False, updates=Stock({})) -> None:
     chat_ids = Service.get_ids()
     for chat_id in chat_ids:
-        config = set(Service.get_config(chat_id))
+        config = set(Service.get_stock_config(chat_id))
         if updates.length() > 0:
             stock_text = updates.__str__(
                 config, include_eggs=True, include_cosmetics=True)
@@ -26,16 +26,21 @@ async def send_notifications(bot: Bot, stock: Stock, include_eggs=False, include
 
 async def send_weather(bot: Bot, new_weather: set, old_weather: set) -> None:
     chat_ids = Service.get_ids()
-    started = "\n".join(new_weather.difference(old_weather))
-    stopped = "\n".join(old_weather.difference(new_weather))
-    message = list()
-    if len(started) > 0:
-        message.append(f"New weather:\n{started}")
-    if len(stopped) > 0:
-        message.append(f"Weather stopped:\n{stopped}")
-    if len(message) > 0:
-        text = "\n\n".join(message)
-        for chat_id in chat_ids:
+    for chat_id in chat_ids:
+        message = list()
+        weather_config = set(Service.get_weather_config(chat_id))
+        started = weather_config.intersection(
+            new_weather.difference(old_weather))
+        stopped = weather_config.intersection(
+            old_weather.difference(new_weather))
+        if len(started) > 0:
+            started_text = "\n".join(started)
+            message.append(f"New weather:\n{started_text}")
+        if len(stopped) > 0:
+            started_text = "\n".join(started)
+            message.append(f"New weather:\n{started_text}")
+        if len(message) > 0:
+            text = "\n\n".join(message)
             await send_message(bot, chat_id, text)
 
 
