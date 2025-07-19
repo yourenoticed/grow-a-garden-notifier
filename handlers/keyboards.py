@@ -10,7 +10,8 @@ stock_kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="See
                                                  [InlineKeyboardButton(
                                                      text="Gears", callback_data="config_gears")],
                                                  [InlineKeyboardButton(
-                                                     text="Eggs", callback_data="config_eggs")]])
+                                                     text="Eggs", callback_data="config_eggs")],
+                                                 [InlineKeyboardButton(text="Weather", callback_data="weather")]])
 
 
 async def weather_kb(chat_id: int) -> InlineKeyboardMarkup:
@@ -20,7 +21,10 @@ async def weather_kb(chat_id: int) -> InlineKeyboardMarkup:
         btn_name = button_text.split()[0]
         weather_kb_builder.button(
             text=button_text, callback_data=f"weather_{btn_name}")
-    return weather_kb_builder.adjust(2).as_markup()
+    weather_markup = weather_kb_builder.adjust(2).as_markup()
+    weather_markup.inline_keyboard.append([InlineKeyboardButton(
+        text="Back", callback_data="configs")])
+    return weather_markup
 
 
 async def get_kb(chat_id: int, shop_name: str, adjust=2) -> InlineKeyboardMarkup:
@@ -30,5 +34,7 @@ async def get_kb(chat_id: int, shop_name: str, adjust=2) -> InlineKeyboardMarkup
         btn_name = " ".join(button_text.split()[:-1])
         kb_builder.button(text=button_text,
                           callback_data=f"stock_{shop_name}_{btn_name}")
-    kb_builder.button(text="Back", callback_data=f"configs")
-    return kb_builder.adjust(adjust).as_markup()
+    kb_markup = kb_builder.adjust(adjust).as_markup()
+    kb_markup.inline_keyboard.append(
+        [InlineKeyboardButton(text="Back", callback_data="configs")])
+    return kb_markup
