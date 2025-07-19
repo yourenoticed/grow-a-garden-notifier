@@ -83,6 +83,11 @@ def write_file(json_to_write: dict) -> None:
         file.write(dumps(json_to_write))
 
 
+def get_all_items() -> dict:
+    with open("./db/stock_items.json", "r") as file:
+        return loads(file.read())
+
+
 def get_default_config() -> list:
     with open("./db/default_config.json", "r") as file:
         return loads(file.read())

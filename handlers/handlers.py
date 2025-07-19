@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
 from utils.service import Service
-from handlers.keyboards import main_kb, weather_kb
+from handlers.keyboards import main_kb, weather_kb, stock_kb, get_kb
 
 router = Router()
 
@@ -10,7 +10,7 @@ router = Router()
 @router.message(CommandStart())
 async def welcome_message(message: Message):
     Service.add_user_to_db(message.chat.id)
-    await show_config(message)
+    await message.answer("Welcome to the GAG stock notifier!", reply_markup=main_kb)
 
 
 @router.message(F.text == "Stock")
@@ -19,11 +19,9 @@ async def show_stock(message: Message):
     await message.answer(stock.__str__(include_eggs=True, include_cosmetics=True), reply_markup=main_kb)
 
 
-@router.message(F.text == "Stock config")
+@router.message(F.text == "Configs")
 async def show_config(message: Message):
-    config = Service.get_stock_config(message.chat.id)
-    text = f"Your config:\n{"\n".join(config)}"
-    await message.answer(text, reply_markup=main_kb)
+    await message.answer(text="Your configs:", reply_markup=stock_kb)
 
 
 @router.message(F.text == "Weather config")
@@ -42,28 +40,56 @@ async def show_weather(message: Message):
     await message.answer(text, reply_markup=main_kb)
 
 
+@router.callback_query(F.data == "configs")
+async def return_to_configs(callback: CallbackQuery):
+    await callback.message.edit_text(text="Your configs:", reply_markup=stock_kb)
+
+
+@router.callback_query(F.data.startswith("config"))
+async def get_shop_config(callback: CallbackQuery):
+    shop_name = callback.data.split("_")[1]
+    user_id = callback.from_user.id
+    shop_kb = await get_kb(user_id, shop_name)
+    await callback.message.edit_text(f"{shop_name.capitalize()}:", reply_markup=shop_kb)
+
+
 @router.callback_query(F.data.startswith("weather"))
 async def add_weather_to_config(callback: CallbackQuery):
-    weather = callback.data.split("_")[1]  # getting weather name
-    user_config: list = Service.get_weather_config(callback.from_user.id)
-    if weather not in user_config:
-        user_config.append(weather)
-        # await callback.message.answer(f"You will receive notifications about {weather}")
+    weather_name = callback.data.split("_")[1]  # getting weather name
+    user_id = callback.from_user.id
+    user_config: list = Service.get_weather_config(user_id)
+    if weather_name not in user_config:
+        user_config.append(weather_name)
     else:
-        user_config.remove(weather)
-        # await callback.message.answer(f"You will stop receiving notifications about {weather}")
-    Service.write_weather_config_to_db(callback.from_user.id, user_config)
-    weather_setup_kb = await weather_kb(callback.from_user.id)
+        user_config.remove(weather_name)
+    Service.write_weather_config_to_db(user_id, user_config)
+    weather_setup_kb = await weather_kb(user_id)
     await callback.message.edit_reply_markup(reply_markup=weather_setup_kb)
 
 
-@router.message()
-async def add_item_to_config(message: Message):
-    user_config: list = Service.get_stock_config(message.chat.id)
-    if message.text not in user_config:
-        user_config.append(message.text)
-        await message.reply("This item has been added to your config")
+@router.callback_query(F.data.startswith("stock"))
+async def add_item_to_config(callback: CallbackQuery):
+    data = callback.data.split("_")
+    shop_name = data[1]
+    item_name = data[2]
+    user_id = callback.from_user.id
+    user_config: list = Service.get_stock_config(user_id)
+    if item_name not in user_config:
+        user_config.append(item_name)
     else:
-        user_config.remove(message.text)
-        await message.reply("This item has been removed from your config")
-    Service.write_stock_config_to_db(message.chat.id, user_config)
+        user_config.remove(item_name)
+    Service.write_stock_config_to_db(user_id, user_config)
+    shop_setup_kb = await get_kb(user_id, shop_name)
+    await callback.message.edit_reply_markup(reply_markup=shop_setup_kb)
+
+
+# @router.message()
+# async def add_item_to_config(message: Message):
+#     user_config: list = Service.get_stock_config(message.chat.id)
+#     if message.text not in user_config:
+#         user_config.append(message.text)
+#         await message.reply("This item has been added to your config")
+#     else:
+#         user_config.remove(message.text)
+#         await message.reply("This item has been removed from your config")
+#     Service.write_stock_config_to_db(message.chat.id, user_config)

@@ -1,4 +1,4 @@
-from utils.db_handler import add_user, get_stock_config, get_weather_config, write_stock_config, write_weather_config, get_user_ids, block_user, unblock_user
+from utils.db_handler import add_user, get_stock_config, get_weather_config, write_stock_config, write_weather_config, get_user_ids, block_user, unblock_user, get_all_items
 from utils.fetcher import fetch_stock, fetch_weather
 from utils.stock import Stock
 
@@ -16,12 +16,7 @@ class Service():
         all_weather = await Service.get_all_weather()
         user_kb = list()
         for weather in all_weather:
-            text_builder = [weather]
-            if weather in config:
-                text_builder.append("✅")
-            else:
-                text_builder.append("❌")
-            user_kb.append(" ".join(text_builder))
+            user_kb.append(Service._build_btn(weather, config))
         return user_kb
 
     async def get_stock() -> Stock:
@@ -30,6 +25,25 @@ class Service():
     async def get_weather() -> set[str]:
         weather = await fetch_weather()
         return {event["weather_name"] for event in weather["weather"] if event["active"] == True}
+
+    def get_all_items() -> dict:
+        return get_all_items()
+
+    async def get_stock_kb(user_id: int, stock_name: str) -> list[str]:
+        config = Service.get_stock_config(user_id)
+        all_items = Service.get_all_items()
+        stock_kb = list()
+        for item in all_items[stock_name]:
+            stock_kb.append(Service._build_btn(item, config))
+        return stock_kb
+
+    def _build_btn(button_text: str, config: list | set) -> str:
+        text_builder = [button_text]
+        if button_text in config:
+            text_builder.append("✅")
+        else:
+            text_builder.append("❌")
+        return " ".join(text_builder)
 
     def get_weather_config(user_id: int) -> list[str]:
         return get_weather_config(user_id)
