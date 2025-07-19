@@ -26,6 +26,15 @@ async def show_config(message: Message):
     await message.answer(text, reply_markup=main_kb)
 
 
+@router.message(F.text == "Weather")
+async def show_weather(message: Message):
+    weather = await list(Service.get_weather())
+    if len(weather) > 0:
+        text = f"Current weather:\n{"\n".join(weather)}"
+    else:
+        text = "There are no weather events right now"
+    await message.answer(text, reply_markup=main_kb)
+
 # @router.chat_member(ChatMemberUpdatedFilter(chat_member_updated.IS_NOT_MEMBER))
 # async def on_user_leave(event: ChatMemberUpdated):
 #     return Service.block_user(event.chat.id)
