@@ -37,8 +37,8 @@ async def send_weather(bot: Bot, new_weather: set, old_weather: set) -> None:
             started_text = "\n".join(started)
             message.append(f"New weather:\n{started_text}")
         if len(stopped) > 0:
-            started_text = "\n".join(started)
-            message.append(f"New weather:\n{started_text}")
+            stopped_text = "\n".join(stopped)
+            message.append(f"Weather stopped:\n{stopped_text}")
         if len(message) > 0:
             text = "\n\n".join(message)
             await send_message(bot, chat_id, text)
