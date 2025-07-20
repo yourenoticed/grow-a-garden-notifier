@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
 from utils.service import Service
-from handlers.keyboards import main_kb, weather_kb, stock_kb, get_kb
+from handlers.keyboards import main_kb, weather_kb, stock_kb, get_kb, other_kb
 
 router = Router()
 
@@ -89,6 +89,26 @@ async def add_item_to_config(callback: CallbackQuery):
         adjust = 2
     shop_setup_kb = await get_kb(user_id, shop_name, adjust)
     await callback.message.edit_reply_markup(reply_markup=shop_setup_kb)
+
+
+@router.callback_query(F.data == "other")
+async def other_configs(callback: CallbackQuery):
+    setting_kb = await other_kb(callback.from_user.id)
+    await callback.message.edit_text(text="Other configs:", reply_markup=setting_kb)
+
+
+@router.callback_query(F.data.startswith("setting"))
+async def add_setting_to_config(callback: CallbackQuery):
+    setting_name = callback.data.split("_")[1]
+    user_id = callback.from_user.id
+    user_config: list = Service.get_stock_config(user_id)
+    if setting_name not in user_config:
+        user_config.append(setting_name)
+    else:
+        user_config.remove(setting_name)
+    Service.write_stock_config_to_db(user_id, user_config)
+    setting_kb = await other_kb(user_id)
+    await callback.message.edit_reply_markup(reply_markup=setting_kb)
 
 
 @router.message()

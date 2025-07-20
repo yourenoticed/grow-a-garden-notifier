@@ -37,6 +37,14 @@ class Service():
             stock_kb.append(Service._build_btn(item, config))
         return stock_kb
 
+    async def get_other_kb(user_id: int) -> list[str]:
+        config = Service.get_stock_config(user_id)
+        settings_names = ["Traveling Merchant", "Cosmetics"]
+        kb = list()
+        for setting in settings_names:
+            kb.append(Service._build_btn(setting, config))
+        return kb
+
     def _build_btn(button_text: str, config: list | set) -> str:
         text_builder = [button_text]
         if button_text in config:

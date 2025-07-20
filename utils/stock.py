@@ -8,6 +8,7 @@ class Stock():
         self.egg_shop = self.get_shop("egg_stock")
         self.cosmetics_shop = self.get_shop("cosmetic_stock")
         self.seed_shop = self.get_shop("seed_stock")
+        self.traveling_merchant = self.get_shop("travelingmerchant_stock")
 
     def get_items(self, shop: dict, config=set()) -> str:
         items = list()
@@ -23,7 +24,10 @@ class Stock():
     def get_shop(self, shop_name: str) -> dict:
         try:
             shop = dict()
-            for item in self.data[shop_name]:
+            shop_data = self.data[shop_name]
+            if shop_name == "travelingmerchant_stock":
+                shop_data = shop_data["stock"]
+            for item in shop_data:
                 if item["display_name"] not in shop:
                     shop[item["display_name"]] = item["quantity"]
                 else:
@@ -37,7 +41,8 @@ class Stock():
             "gear_stock": list(),
             "egg_stock": list(),
             "cosmetic_stock": list(),
-            "seed_stock": list()
+            "seed_stock": list(),
+            "travelingmerchant_stock": list()
         }
         for item in diff:
             if item in self.gear_shop:
@@ -51,6 +56,9 @@ class Stock():
                     {"display_name": item, "quantity": diff[item]})
             elif item in self.seed_shop:
                 representation["seed_stock"].append(
+                    {"display_name": item, "quantity": diff[item]})
+            elif item in self.traveling_merchant:
+                representation["travelingmerchant_stock"].append(
                     {"display_name": item, "quantity": diff[item]})
         return representation
 
@@ -91,6 +99,7 @@ class Stock():
         self._add_shop_to_current_stock(all_items, self.gear_shop)
         self._add_shop_to_current_stock(all_items, self.egg_shop)
         self._add_shop_to_current_stock(all_items, self.cosmetics_shop)
+        self._add_shop_to_current_stock(all_items, self.traveling_merchant)
         return all_items
 
     def _add_shop_to_current_stock(self, current_stock: dict, stock_to_add: dict) -> dict:
@@ -103,9 +112,12 @@ class Stock():
         shop_items["Gears"] = self.get_items(self.gear_shop, config)
         if include_eggs == True:
             shop_items["Eggs"] = self.get_items(self.egg_shop, config)
-        if include_cosmetics == True:
+        if include_cosmetics == True and "Cosmetics" in config:
             shop_items["Cosmetics"] = self.get_items(
                 self.cosmetics_shop, config)
+        if len(self.traveling_merchant) > 0 and "Traveling Merchant" in config:
+            shop_items["Traveling Merchant"] = self.get_items(
+                self.traveling_merchant)
         return shop_items
 
     def length(self):
