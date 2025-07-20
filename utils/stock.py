@@ -115,10 +115,20 @@ class Stock():
         if include_cosmetics == True and ("Cosmetics" in config or len(config) == 0):
             shop_items["Cosmetics"] = self.get_items(
                 self.cosmetics_shop, config)
-        if len(self.traveling_merchant) > 0 and ("Traveling Merchant" in config or len(config) == 0):
+        if self.is_traveling_active() and ("Traveling Merchant" in config or len(config) == 0):
             shop_items["Traveling Merchant"] = self.get_items(
                 self.traveling_merchant)
         return shop_items
+
+    def is_traveling_active(self) -> bool:
+        if len(self.traveling_merchant) > 0:
+            start_time = localtime(
+                self.data["travelingmerchant_stock"]["stock"][0]["start_date_unix"])
+            now_time = localtime()
+            if start_time.tm_hour == now_time.tm_hour:
+                if start_time.tm_min + 30 > now_time.tm_min:
+                    return True
+        return False
 
     def length(self):
         return len(self.get_current_stock_items())
