@@ -1,6 +1,5 @@
 from aiogram import Bot
-from time import sleep
-from asyncio import run
+from asyncio import run, sleep
 from utils.notification_sender import send_notifications, send_weather
 from utils.service import Service
 from utils.stock import Stock
@@ -21,7 +20,7 @@ async def start_polling(bot: Bot) -> None:
 async def on_startup(bot: Bot) -> Stock:
     stock: Stock = await Service.get_stock()
     weather = await Service.get_weather()
-    await send_notifications(bot, stock, include_cosmetics=True, include_eggs=True)
+    await send_notifications(bot, stock)
     await send_weather(bot, new_weather=weather, old_weather=set())
     return (stock, weather)
 
@@ -29,20 +28,7 @@ async def on_startup(bot: Bot) -> Stock:
 async def check_updates(bot: Bot, last_stock: Stock) -> Stock:
     new_stock: Stock = await Service.get_stock()
     upd = new_stock.check_update(last_stock)
-    match upd:
-        case "stock":
-            new_stock = await Service.get_stock()
-            await send_notifications(bot, new_stock)
-        case "eggs":
-            new_stock = await Service.get_stock()
-            await send_notifications(bot, new_stock, include_eggs=True)
-        case "cosmetics":
-            new_stock = await Service.get_stock()
-            await send_notifications(bot, new_stock, include_eggs=True, include_cosmetics=True)
-        case "none":
-            update = Stock(new_stock.find_diff(last_stock))
-            if update.length() > 0:
-                await send_notifications(bot, new_stock, updates=update)
+    await send_notifications(bot, updates=Stock(upd))
     return new_stock
 
 

@@ -16,8 +16,8 @@ async def fetch_stock() -> Stock:
         return Stock(dict())
 
 
-async def fetch_weather() -> set[str]:
+async def fetch_weather() -> dict:
     try:
         return get(WEATHER_URL).json()
     except JSONDecodeError:
-        return set()
+        return dict()

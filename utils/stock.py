@@ -9,19 +9,6 @@ class Stock():
         self.cosmetics_shop = self.get_shop("cosmetic_stock")
         self.seed_shop = self.get_shop("seed_stock")
 
-    # not sure if I need this piece of code anymore
-    # def next_refresh_at(self) -> dict[str, int]:
-    #     try:
-    #         curr_time = localtime()
-    #         stock = (curr_time.tm_min - (curr_time.tm_min % 5)) % 60
-    #         eggs = (curr_time.tm_min - (curr_time.tm_min % 30) + 30) % 60
-    #         cosmetics = (curr_time.tm_hour - (curr_time.tm_hour % 4) + 4) % 24
-    #         return {"stock": stock,
-    #                 "eggs": eggs,
-    #                 "cosmetics": cosmetics}
-    #     except:
-    #         return dict()
-
     def get_items(self, shop: dict, config=set()) -> str:
         items = list()
         if len(config) > 0:
@@ -45,29 +32,7 @@ class Stock():
         except:
             return dict()
 
-    def json(self):
-        return {
-            "seed_shop": self.seed_shop,
-            "gear_shop": self.gear_shop,
-            "egg_shop": self.egg_shop,
-            "cosmetics_shop": self.cosmetics_shop,
-        }
-
-    def find_diff(self, old_stock) -> dict:
-        # theoretically, items can only appear in the new stock
-        diff = dict()
-        old_stock_items = Stock.get_current_stock_items(old_stock)
-        new_stock_items = self.get_current_stock_items()
-        for item in new_stock_items:
-            if item not in old_stock_items:
-                diff[item] = new_stock_items[item]
-            else:
-                if old_stock_items[item] < new_stock_items[item]:
-                    diff[item] = new_stock_items[item] - old_stock_items[item]
-
-        return self.diff_repr(diff)
-
-    def diff_repr(self, diff: dict) -> dict:
+    def diff_repr(self, diff) -> dict:
         representation = {
             "gear_stock": list(),
             "egg_stock": list(),
@@ -89,17 +54,36 @@ class Stock():
                     {"display_name": item, "quantity": diff[item]})
         return representation
 
-    def check_update(self, old_stock) -> str:
+    def json(self):
+        return self.diff_repr(self.get_current_stock_items())
+
+    def find_diff(self, old_stock) -> dict:
+        # theoretically, items can only appear in the new stock
+        diff = dict()
+        old_stock_items = Stock.get_current_stock_items(old_stock)
+        new_stock_items = self.get_current_stock_items()
+        for item in new_stock_items:
+            if item not in old_stock_items:
+                diff[item] = new_stock_items[item]
+            else:
+                if old_stock_items[item] < new_stock_items[item]:
+                    diff[item] = new_stock_items[item] - old_stock_items[item]
+
+        return self.diff_repr(diff)
+
+    def check_update(self, old_stock) -> dict:
         if old_stock != self:
             curr_time = localtime()
-            if (curr_time.tm_hour % 4 == 3 and curr_time.tm_min == 0) or self.cosmetics_shop != old_stock.cosmetics_shop:
-                return "cosmetics"
-            if curr_time.tm_min % 30 == 0 or self.egg_shop != old_stock.egg_shop:
-                return "eggs"
             if curr_time.tm_min % 5 == 0:
-                return "stock"
-            return "none"
-        return "not updated"
+                json = self.json()
+                if self.cosmetics_shop != old_stock.cosmetics_shop or (curr_time.tm_hour % 4 == 3 and curr_time.tm_min == 0):
+                    json.pop("cosmetic_stock")
+                if curr_time.tm_min % 30 != 0:
+                    json.pop("egg_stock")
+            else:
+                json = self.find_diff(old_stock)
+            return json
+        return dict()
 
     def get_current_stock_items(self) -> dict:
         all_items = dict()
