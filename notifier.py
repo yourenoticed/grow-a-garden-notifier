@@ -10,7 +10,7 @@ async def start_polling(bot: Bot) -> None:
     stock, weather = await on_startup(bot)
     while True:
         try:
-            sleep(10)
+            await sleep(10)
             weather = await check_weather_updates(bot, weather)
             stock = await check_updates(bot, stock)
         except KeyboardInterrupt:

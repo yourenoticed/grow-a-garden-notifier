@@ -76,9 +76,9 @@ class Stock():
             curr_time = localtime()
             if curr_time.tm_min % 5 == 0:
                 json = self.json()
-                if self.cosmetics_shop != old_stock.cosmetics_shop or (curr_time.tm_hour % 4 == 3 and curr_time.tm_min == 0):
+                if curr_time.tm_hour % 4 != 3 or curr_time.tm_min != 0:
                     json.pop("cosmetic_stock")
-                if curr_time.tm_min % 30 != 0:
+                if curr_time.tm_min % 30 != 0 and old_stock.egg_shop == self.egg_shop:
                     json.pop("egg_stock")
             else:
                 json = self.find_diff(old_stock)

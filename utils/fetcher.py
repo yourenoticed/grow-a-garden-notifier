@@ -19,5 +19,5 @@ async def fetch_stock() -> Stock:
 async def fetch_weather() -> dict:
     try:
         return get(WEATHER_URL).json()
-    except JSONDecodeError:
+    except:
         return dict()
