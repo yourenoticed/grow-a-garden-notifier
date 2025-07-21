@@ -50,5 +50,19 @@
         "Mythical Egg",
         "Paradise Egg",
         "Bug Egg"
+    ],
+    "eventshop": [
+        "Zen Seed Pack",
+        "Zen Egg",
+        "Hot Spring",
+        "Zen Sand",
+        "Tranquil Radar",
+        "Zenflare",
+        "Zen Crate",
+        "Soft Sunshine",
+        "Koi",
+        "Zen Gnome Crate",
+        "Spiked Mango",
+        "Pet Shard Tranquil"
     ]
 }

@@ -8,6 +8,7 @@ class Stock():
         self.egg_shop = self.get_shop("egg_stock")
         self.cosmetics_shop = self.get_shop("cosmetic_stock")
         self.seed_shop = self.get_shop("seed_stock")
+        self.event_shop = self.get_shop("eventshop_stock")
         self.traveling_merchant = self.get_shop("travelingmerchant_stock")
 
     def get_items(self, shop: dict, config=set()) -> str:
@@ -42,7 +43,8 @@ class Stock():
             "egg_stock": list(),
             "cosmetic_stock": list(),
             "seed_stock": list(),
-            "travelingmerchant_stock": list()
+            "travelingmerchant_stock": list(),
+            "eventshop_stock": list()
         }
         for item in diff:
             if item in self.gear_shop:
@@ -59,6 +61,9 @@ class Stock():
                     {"display_name": item, "quantity": diff[item]})
             elif item in self.traveling_merchant:
                 representation["travelingmerchant_stock"].append(
+                    {"display_name": item, "quantity": diff[item]})
+            elif item in self.event_shop:
+                representation["eventshop_stock"].append(
                     {"display_name": item, "quantity": diff[item]})
         return representation
 
@@ -86,8 +91,11 @@ class Stock():
                 json = self.json()
                 if curr_time.tm_hour % 4 != 3 or curr_time.tm_min != 0:
                     json.pop("cosmetic_stock")
+                    json.pop("travelingmerchant_stock")
                 if curr_time.tm_min % 30 != 0 and old_stock.egg_shop == self.egg_shop:
                     json.pop("egg_stock")
+                if curr_time.tm_min != 0:
+                    json.pop("eventshop_stock")
             else:
                 json = self.find_diff(old_stock)
             return json
@@ -110,6 +118,7 @@ class Stock():
         shop_items = dict()
         shop_items["Seeds"] = self.get_items(self.seed_shop, config)
         shop_items["Gears"] = self.get_items(self.gear_shop, config)
+        shop_items["Event Shop"] = self.get_items(self.event_shop, config)
         if include_eggs == True:
             shop_items["Eggs"] = self.get_items(self.egg_shop, config)
         if include_cosmetics == True and ("Cosmetics" in config or len(config) == 0):
@@ -121,14 +130,16 @@ class Stock():
         return shop_items
 
     def is_traveling_active(self) -> bool:
-        if len(self.traveling_merchant) > 0:
-            start_time = localtime(
-                self.data["travelingmerchant_stock"]["stock"][0]["start_date_unix"])
-            now_time = localtime()
-            if start_time.tm_hour == now_time.tm_hour:
-                if start_time.tm_min + 30 > now_time.tm_min:
-                    return True
-        return False
+        try:
+            if len(self.traveling_merchant) > 0:
+                start_time = localtime(
+                    self.data["travelingmerchant_stock"]["stock"][0]["start_date_unix"])
+                now_time = localtime()
+                if start_time.tm_hour == now_time.tm_hour:
+                    if start_time.tm_min + 30 > now_time.tm_min:
+                        return True
+        finally:
+            return False
 
     def length(self):
         return len(self.get_current_stock_items())
