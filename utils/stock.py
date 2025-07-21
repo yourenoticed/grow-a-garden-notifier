@@ -123,7 +123,7 @@ class Stock():
             shop_items["Eggs"] = self.get_items(self.egg_shop, config)
         if include_cosmetics == True and ("Cosmetics" in config or len(config) == 0):
             shop_items["Cosmetics"] = self.get_items(
-                self.cosmetics_shop, config)
+                self.cosmetics_shop)
         if self.is_traveling_active() and ("Traveling Merchant" in config or len(config) == 0):
             shop_items["Traveling Merchant"] = self.get_items(
                 self.traveling_merchant)
