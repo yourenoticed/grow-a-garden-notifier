@@ -94,7 +94,7 @@ class Stock():
                     json.pop("travelingmerchant_stock")
                 if curr_time.tm_min % 30 != 0 and old_stock.egg_shop == self.egg_shop:
                     json.pop("egg_stock")
-                if curr_time.tm_min != 0:
+                if curr_time.tm_min != 0 and old_stock.event_shop == self.event_shop:
                     json.pop("eventshop_stock")
             else:
                 json = self.find_diff(old_stock)
