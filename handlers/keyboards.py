@@ -12,9 +12,9 @@ stock_kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="See
                                                  [InlineKeyboardButton(
                                                      text="Eggs", callback_data="config_eggs")],
                                                  [InlineKeyboardButton(
-                                                     text="Weather", callback_data="weather")],
-                                                 [InlineKeyboardButton(
                                                      text="Event shop", callback_data="config_eventshop")],
+                                                 [InlineKeyboardButton(
+                                                     text="Weather", callback_data="weather")],
                                                  [InlineKeyboardButton(text="Other", callback_data="other")]])
 
 

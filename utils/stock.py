@@ -89,9 +89,11 @@ class Stock():
             curr_time = localtime()
             if curr_time.tm_min % 5 == 0:
                 json = self.json()
-                if curr_time.tm_hour % 4 != 3 or curr_time.tm_min != 0:
-                    json.pop("cosmetic_stock")
-                    json.pop("travelingmerchant_stock")
+                if (curr_time.tm_hour % 4 != 3 or curr_time.tm_min != 0):
+                    if old_stock.cosmetics_shop == self.cosmetics_shop:
+                        json.pop("cosmetic_stock")
+                    if old_stock.traveling_merchant == self.traveling_merchant:
+                        json.pop("travelingmerchant_stock")
                 if curr_time.tm_min % 30 != 0 and old_stock.egg_shop == self.egg_shop:
                     json.pop("egg_stock")
                 if curr_time.tm_min != 0 and old_stock.event_shop == self.event_shop:
@@ -106,6 +108,7 @@ class Stock():
         self._add_shop_to_current_stock(all_items, self.seed_shop)
         self._add_shop_to_current_stock(all_items, self.gear_shop)
         self._add_shop_to_current_stock(all_items, self.egg_shop)
+        self._add_shop_to_current_stock(all_items, self.event_shop)
         self._add_shop_to_current_stock(all_items, self.cosmetics_shop)
         self._add_shop_to_current_stock(all_items, self.traveling_merchant)
         return all_items
@@ -120,7 +123,7 @@ class Stock():
         shop_items["Gears"] = self.get_items(self.gear_shop, config)
         shop_items["Eggs"] = self.get_items(self.egg_shop, config)
         shop_items["Event Shop"] = self.get_items(self.event_shop, config)
-        if "Cosmetics shop" in config or len(config) == 0:
+        if "Cosmetics" in config or len(config) == 0:
             shop_items["Cosmetics"] = self.get_items(self.cosmetics_shop)
         if ("Traveling Merchant" in config or len(config) == 0) and self.is_traveling_active():
             shop_items["Traveling Merchant"] = self.get_items(
