@@ -94,7 +94,7 @@ class Stock():
                     json.pop("travelingmerchant_stock")
                 if curr_time.tm_min % 30 != 0 and old_stock.egg_shop == self.egg_shop:
                     json.pop("egg_stock")
-                if curr_time.tm_min != 0:
+                if curr_time.tm_min != 0 and old_stock.event_shop == self.event_shop:
                     json.pop("eventshop_stock")
             else:
                 json = self.find_diff(old_stock)
@@ -114,32 +114,28 @@ class Stock():
         for item in stock_to_add:
             current_stock[item] = stock_to_add[item]
 
-    def __repr__(self, config=set(), include_eggs=False, include_cosmetics=False) -> dict:
+    def __repr__(self, config=set()) -> dict:
         shop_items = dict()
         shop_items["Seeds"] = self.get_items(self.seed_shop, config)
         shop_items["Gears"] = self.get_items(self.gear_shop, config)
+        shop_items["Eggs"] = self.get_items(self.egg_shop, config)
         shop_items["Event Shop"] = self.get_items(self.event_shop, config)
-        if include_eggs == True:
-            shop_items["Eggs"] = self.get_items(self.egg_shop, config)
-        if include_cosmetics == True and ("Cosmetics" in config or len(config) == 0):
-            shop_items["Cosmetics"] = self.get_items(
-                self.cosmetics_shop)
-        if self.is_traveling_active() and ("Traveling Merchant" in config or len(config) == 0):
+        if "Cosmetics shop" in config or len(config) == 0:
+            shop_items["Cosmetics"] = self.get_items(self.cosmetics_shop)
+        if ("Traveling Merchant" in config or len(config) == 0) and self.is_traveling_active():
             shop_items["Traveling Merchant"] = self.get_items(
                 self.traveling_merchant)
         return shop_items
 
     def is_traveling_active(self) -> bool:
-        try:
-            if len(self.traveling_merchant) > 0:
-                start_time = localtime(
-                    self.data["travelingmerchant_stock"]["stock"][0]["start_date_unix"])
-                now_time = localtime()
-                if start_time.tm_hour == now_time.tm_hour:
-                    if start_time.tm_min + 30 > now_time.tm_min:
-                        return True
-        finally:
-            return False
+        if len(self.traveling_merchant) > 0:
+            start_time = localtime(
+                self.data["travelingmerchant_stock"]["stock"][0]["start_date_unix"])
+            now_time = localtime()
+            if start_time.tm_hour == now_time.tm_hour:
+                if start_time.tm_min + 30 > now_time.tm_min:
+                    return True
+        return False
 
     def length(self):
         return len(self.get_current_stock_items())
@@ -147,7 +143,6 @@ class Stock():
     def __eq__(self, new_stock) -> bool:
         return self.json() == Stock.json(new_stock)
 
-    def __str__(self, config=set(), include_eggs=False, include_cosmetics=False) -> str:
-        repr_dict = self.__repr__(
-            config, include_eggs, include_cosmetics)
+    def __str__(self, config=set()) -> str:
+        repr_dict = self.__repr__(config)
         return "\n\n".join([f"{shop_name}:\n{repr_dict[shop_name]}" for shop_name in repr_dict if len(repr_dict[shop_name]) > 0])

@@ -10,12 +10,11 @@ def build_message(stock_text: str) -> str:
         return "The stock has been refreshed but there are no items you need"
 
 
-async def send_notifications(bot: Bot, updates=Stock({})) -> None:
+async def send_notifications(bot: Bot, updates: Stock) -> None:
     chat_ids = Service.get_ids()
     for chat_id in chat_ids:
         config = set(Service.get_stock_config(chat_id))
-        stock_text = updates.__str__(
-            config, include_eggs=True, include_cosmetics=True)
+        stock_text = updates.__str__(config)
         message = build_message(stock_text)
         if message != "The stock has been refreshed but there are no items you need":
             await send_message(bot, chat_id, message)
