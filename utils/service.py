@@ -23,8 +23,11 @@ class Service():
         return await fetch_stock()
 
     async def get_weather() -> set[str]:
-        weather = await fetch_weather()
-        return {event["weather_name"] for event in weather["weather"] if event["active"] == True}
+        try:
+            weather = await fetch_weather()
+            return {event["weather_name"] for event in weather["weather"] if event["active"] == True}
+        except:
+            return set()
 
     def get_all_items() -> dict:
         return get_all_items()
