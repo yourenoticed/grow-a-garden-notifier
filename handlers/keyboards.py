@@ -6,13 +6,13 @@ main_kb = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="Stock"), KeyboardB
                                         [KeyboardButton(text="Configs")]],
                               resize_keyboard=True)
 
-stock_kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Seeds", callback_data="config_seeds")],
+stock_kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Seeds", callback_data="config-seeds")],
                                                  [InlineKeyboardButton(
-                                                     text="Gears", callback_data="config_gears")],
+                                                     text="Gears", callback_data="config-gears")],
                                                  [InlineKeyboardButton(
-                                                     text="Eggs", callback_data="config_eggs")],
+                                                     text="Eggs", callback_data="config-eggs")],
                                                  [InlineKeyboardButton(
-                                                     text="Event shop", callback_data="config_eventshop")],
+                                                     text="Event shop", callback_data="config-eventshop")],
                                                  [InlineKeyboardButton(
                                                      text="Weather", callback_data="weather")],
                                                  [InlineKeyboardButton(text="Other", callback_data="other")]])
@@ -24,7 +24,7 @@ async def weather_kb(chat_id: int) -> InlineKeyboardMarkup:
     for button_text in weather_kb_texts:
         btn_name = button_text.split()[0]
         weather_kb_builder.button(
-            text=button_text, callback_data=f"weather_{btn_name}")
+            text=button_text, callback_data=f"weather-{btn_name}")
     weather_markup = weather_kb_builder.adjust(2).as_markup()
     return_to_stock_btn(weather_markup)
     return weather_markup
@@ -36,7 +36,7 @@ async def get_kb(chat_id: int, shop_name: str, adjust=2) -> InlineKeyboardMarkup
     for button_text in kb_texts:
         btn_name = " ".join(button_text.split()[:-1])
         kb_builder.button(text=button_text,
-                          callback_data=f"stock_{shop_name}_{btn_name}")
+                          callback_data=f"stock-{shop_name}_{btn_name}")
     kb_markup = kb_builder.adjust(adjust).as_markup()
     return_to_stock_btn(kb_markup)
     return kb_markup
@@ -48,7 +48,7 @@ async def other_kb(chat_id: int) -> InlineKeyboardMarkup:
     for button_text in kb_texts:
         btn_name = " ".join(button_text.split()[:-1])
         kb_builder.button(text=button_text,
-                          callback_data=f"setting_{btn_name}")
+                          callback_data=f"setting-{btn_name}")
     kb_markup = kb_builder.adjust(1).as_markup()
     return_to_stock_btn(kb_markup)
     return kb_markup

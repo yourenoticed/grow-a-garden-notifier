@@ -41,7 +41,7 @@ async def return_to_configs(callback: CallbackQuery):
 
 @router.callback_query(F.data.startswith("config"))
 async def get_shop_config(callback: CallbackQuery):
-    shop_name = callback.data.split("_")[1]
+    shop_name = callback.data.split("-")[1]
     user_id = callback.from_user.id
     if shop_name == "eggs":
         adjust = 1
@@ -59,7 +59,7 @@ async def start_setup(callback: CallbackQuery):
 
 @router.callback_query(F.data.startswith("weather"))
 async def add_weather_to_config(callback: CallbackQuery):
-    weather_name = callback.data.split("_")[1]  # getting weather name
+    weather_name = callback.data.split("-")[1]  # getting weather name
     user_id = callback.from_user.id
     user_config: list = Service.get_weather_config(user_id)
     if weather_name not in user_config:
@@ -73,7 +73,7 @@ async def add_weather_to_config(callback: CallbackQuery):
 
 @router.callback_query(F.data.startswith("stock"))
 async def add_item_to_config(callback: CallbackQuery):
-    data = callback.data.split("_")
+    data = callback.data.split("-")
     shop_name = data[1]
     item_name = data[2]
     user_id = callback.from_user.id
@@ -99,7 +99,7 @@ async def other_configs(callback: CallbackQuery):
 
 @router.callback_query(F.data.startswith("setting"))
 async def add_setting_to_config(callback: CallbackQuery):
-    setting_name = callback.data.split("_")[1]
+    setting_name = callback.data.split("-")[1]
     user_id = callback.from_user.id
     user_config: list = Service.get_stock_config(user_id)
     if setting_name not in user_config:
