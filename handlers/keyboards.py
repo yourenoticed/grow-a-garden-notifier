@@ -36,7 +36,7 @@ async def get_kb(chat_id: int, shop_name: str, adjust=2) -> InlineKeyboardMarkup
     for button_text in kb_texts:
         btn_name = " ".join(button_text.split()[:-1])
         kb_builder.button(text=button_text,
-                          callback_data=f"stock-{shop_name}_{btn_name}")
+                          callback_data=f"stock-{shop_name}-{btn_name}")
     kb_markup = kb_builder.adjust(adjust).as_markup()
     return_to_stock_btn(kb_markup)
     return kb_markup
