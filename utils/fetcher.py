@@ -1,4 +1,5 @@
 from utils.stock import Stock
+from config import options
 from requests import get
 from requests import JSONDecodeError
 
@@ -10,7 +11,7 @@ INFO_URL = f"{API_URL}/info"
 
 async def fetch_stock() -> Stock:
     try:
-        stock = get(STOCK_URL).json()
+        stock = get(STOCK_URL, headers=options["headers"]).json()
         return Stock(stock)
     except:
         return Stock(dict())
@@ -18,6 +19,6 @@ async def fetch_stock() -> Stock:
 
 async def fetch_weather() -> dict:
     try:
-        return get(WEATHER_URL).json()
+        return get(WEATHER_URL, headers=options["headers"]).json()
     except:
         return dict()
