@@ -28,6 +28,7 @@
     ],
     "gears": [
         "Watering Can",
+        "Trading Ticket",
         "Trowel",
         "Recall Wrench",
         "Basic Sprinkler",
@@ -42,6 +43,7 @@
         "Favorite Tool",
         "Harvest Tool",
         "Friendship Pot",
+        "Grandmaster Sprinkler",
         "Levelup Lollipop"
     ],
     "eggs": [

@@ -1,6 +1,7 @@
 from aiogram import Bot
 from utils.service import Service
 from utils.stock import Stock
+from handlers.keyboards import main_kb
 
 
 def build_message(stock_text: str) -> str:
@@ -42,6 +43,6 @@ async def send_weather(bot: Bot, new_weather: set, old_weather: set) -> None:
 
 async def send_message(bot: Bot, chat_id: int, text: str) -> None:
     try:
-        await Bot.send_message(bot, chat_id, text, request_timeout=10)
+        await Bot.send_message(bot, chat_id, text, request_timeout=10, reply_markup=main_kb)
     except:
         pass
